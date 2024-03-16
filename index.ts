@@ -1,35 +1,17 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-dotenv.config();
 import { connect as connectDatabase } from "./config/database";
 
-connectDatabase();
+import mainV1Routes from "./api/v1/routes/index.route";
 
-import Task from "./models/task.model";
+dotenv.config();
+connectDatabase();
 
 const app: Express = express();
 const port: string | number = process.env.PORT || 3000;
 
-app.get("/tasks", async (req: Request, res: Response) => {
-  const tasks = await Task.find({
-    deleted: false
-  });
-
-  res.json(tasks);
-});
-
-app.get("/tasks/detail/:id", async (req: Request, res: Response) => {
-  const id: string = req.params.id;
-
-  console.log(id);
-
-  const task = await Task.findOne({
-    _id: id,
-    deleted: false
-  });
-
-  res.json(task);
-});
+// API Routes
+mainV1Routes(app);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
